@@ -242,7 +242,7 @@ def main(cfg: DictConfig) -> None:
     else:
         zeta = cfg.args.zeta
         eta = cfg.args.eta
-    print(f"zeta: {zeta:>5f}, eta: {eta:>5f}")
+    print(f"zeta: {zeta:>10.10f}, eta: {eta:>10.10f}")
     visc = zeta + eta / 3.0
 
     def evolve(Q):
