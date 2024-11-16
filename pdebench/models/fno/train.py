@@ -16,6 +16,7 @@ from torch import nn
 # np.random.seed(0)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
 def run_training(
     if_training,
     continue_training,
@@ -47,9 +48,9 @@ def run_training(
     base_path="../data/",
     training_type="autoregressive",
 ):
-    # print(
-    #    f"Epochs = {epochs}, learning rate = {learning_rate}, scheduler step = {scheduler_step}, scheduler gamma = {scheduler_gamma}"
-    # )
+    print(
+        f"Epochs = {epochs}, learning rate = {learning_rate}, scheduler step = {scheduler_step}, scheduler gamma = {scheduler_gamma}"
+    )
 
     ################################################################
     # load data
@@ -265,8 +266,8 @@ def run_training(
                 optimizer.step()
 
             if training_type in ["single"]:
-                x = xx[..., 0, :]
-                y = yy[..., t_train - 1 : t_train, :]
+                x = xx[..., 0, :]  # 20,64,64,10,4
+                y = yy[..., t_train - 1 : t_train, :]  # 20,64,64,21,4
                 pred = model(x, grid)
                 _batch = yy.size(0)
                 loss += loss_fn(pred.reshape(_batch, -1), y.reshape(_batch, -1))

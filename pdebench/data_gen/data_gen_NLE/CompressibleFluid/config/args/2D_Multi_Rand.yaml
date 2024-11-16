@@ -1,4 +1,4 @@
-save: "../save/CFD/"
+save: "../save/2D/CFD/"
 dt_save: 0.05
 ini_time: 0.
 fin_time: 1.

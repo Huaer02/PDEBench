@@ -157,8 +157,16 @@ from jax import device_put, lax
 # Hydra
 from omegaconf import DictConfig
 
+import sys
+import os
+from math import ceil, log, exp
+
 sys.path.append("..")
 from utils import Courant, bc, init_multi, limiting
+
+
+# os.environ["JAX_TRACEBACK_FILTERING"] = "off"
+jax.config.update("jax_traceback_filtering", "off")
 
 
 def _pass(carry):

@@ -146,6 +146,7 @@ arrangements between the parties relating hereto.
 
        THIS HEADER MAY NOT BE EXTRACTED OR MODIFIED IN ANY WAY.
 """
+
 from __future__ import annotations
 
 import math as mt
@@ -190,10 +191,12 @@ class FNODatasetSingle(Dataset):
                 keys = list(f.keys())
                 keys.sort()
                 if "tensor" not in keys:
+                    print("_data = np.array(f[density], dtype=np.float32) ")
                     _data = np.array(
                         f["density"], dtype=np.float32
                     )  # batch, time, x,...
                     idx_cfd = _data.shape
+                    print("_data shape", idx_cfd)
                     if len(idx_cfd) == 3:  # 1D
                         self.data = np.zeros(
                             [
@@ -255,6 +258,7 @@ class FNODatasetSingle(Dataset):
                             dtype=np.float32,
                         )
                         # density
+                        print("getting density data...")
                         _data = _data[
                             ::reduced_batch,
                             ::reduced_resolution_t,
@@ -265,6 +269,7 @@ class FNODatasetSingle(Dataset):
                         _data = np.transpose(_data, (0, 2, 3, 1))
                         self.data[..., 0] = _data  # batch, x, t, ch
                         # pressure
+                        print("getting pressure data...")
                         _data = np.array(
                             f["pressure"], dtype=np.float32
                         )  # batch, time, x,...
@@ -278,6 +283,7 @@ class FNODatasetSingle(Dataset):
                         _data = np.transpose(_data, (0, 2, 3, 1))
                         self.data[..., 1] = _data  # batch, x, t, ch
                         # Vx
+                        print("getting Vx data...")
                         _data = np.array(
                             f["Vx"], dtype=np.float32
                         )  # batch, time, x,...
@@ -291,6 +297,7 @@ class FNODatasetSingle(Dataset):
                         _data = np.transpose(_data, (0, 2, 3, 1))
                         self.data[..., 2] = _data  # batch, x, t, ch
                         # Vy
+                        print("getting Vy data...")
                         _data = np.array(
                             f["Vy"], dtype=np.float32
                         )  # batch, time, x,...
@@ -301,6 +308,7 @@ class FNODatasetSingle(Dataset):
                             ::reduced_resolution,
                         ]
                         ## convert to [x1, ..., xd, t, v]
+                        print("convert to [x1, ..., xd, t, v]...")
                         _data = np.transpose(_data, (0, 2, 3, 1))
                         self.data[..., 3] = _data  # batch, x, t, ch
 
@@ -463,7 +471,7 @@ class FNODatasetSingle(Dataset):
                         ]
 
         elif filename[-2:] == "h5":  # SWE-2D (RDB)
-            # print(".H5 file extension is assumed hereafter")
+            print(".H5 file extension is assumed hereafter")
 
             with h5py.File(root_path, "r") as f:
                 keys = list(f.keys())
@@ -515,7 +523,11 @@ class FNODatasetSingle(Dataset):
         # Time steps used as initial conditions
         self.initial_step = initial_step
 
+        print("move self.data to torch...")
+
         self.data = self.data if torch.is_tensor(self.data) else torch.tensor(self.data)
+
+        print("self.data shape: ", self.data.shape)
 
     def __len__(self):
         return len(self.data)

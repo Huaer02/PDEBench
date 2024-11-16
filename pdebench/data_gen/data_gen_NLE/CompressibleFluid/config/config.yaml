@@ -7,3 +7,4 @@ hydra:
   output_subdir: null
   run:
     dir: .
+    # 这里不用项目根目录因为没有引用其他文件

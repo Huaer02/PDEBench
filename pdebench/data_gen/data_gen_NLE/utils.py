@@ -517,7 +517,7 @@ def init_HD(
         u = u.loc[4].add(p0)
 
     elif mode == "BlastWave":  # Kelvin-Helmholtz instability
-        """ Stone Gardiner 2009 without B """
+        """Stone Gardiner 2009 without B"""
         nx, ny, nz = xc.shape[0], yc.shape[0], zc.shape[0]
         db = 1.0
         pb = 0.1
@@ -1039,10 +1039,14 @@ def init_multi_HD_2DRand(
         d = d0 * (1.0 + delD * d / jnp.abs(d).mean())
         p = p0 * (1.0 + delP * p / jnp.abs(p).mean())
 
-        u = u.loc[0, 2:-2, 2:-2, 2:-2].set(d)
-        u = u.loc[1, 2:-2, 2:-2, 2:-2].set(vx)
-        u = u.loc[2, 2:-2, 2:-2, 2:-2].set(vy)
-        u = u.loc[4, 2:-2, 2:-2, 2:-2].set(p)
+        # u = u.loc[0, 2:-2, 2:-2, 2:-2].set(d)
+        # u = u.loc[1, 2:-2, 2:-2, 2:-2].set(vx)
+        # u = u.loc[2, 2:-2, 2:-2, 2:-2].set(vy)
+        # u = u.loc[4, 2:-2, 2:-2, 2:-2].set(p)
+        u = u.at[0, 2:-2, 2:-2, 2:-2].set(d)
+        u = u.at[1, 2:-2, 2:-2, 2:-2].set(vx)
+        u = u.at[2, 2:-2, 2:-2, 2:-2].set(vy)
+        u = u.at[4, 2:-2, 2:-2, 2:-2].set(p)
         return u
 
     key = random.PRNGKey(init_key)
@@ -1082,13 +1086,22 @@ def init_multi_HD_2DRand(
     carry = cond, mask, _xc, _yc, xL, xR, yL, yR, trns
     cond, mask, _xc, _yc, xL, xR, yL, yR, trns = vmap(select_W, 0, 0)(carry)
 
-    u = u.loc[:, :, 2:-2, 2:-2, 2:-2].set(
+    # u = u.loc[:, :, 2:-2, 2:-2, 2:-2].set(
+    #     u[:, :, 2:-2, 2:-2, 2:-2] * mask[:, None, :, :, None]
+    # )
+    # u = u.loc[:, 0, 2:-2, 2:-2, 2:-2].add(
+    #     d0[:, :, None, None] * (1.0 - mask[:, :, :, None])
+    # )
+    # u = u.loc[:, 4, 2:-2, 2:-2, 2:-2].add(
+    #     d0[:, :, None, None] * T0[:, :, None, None] * (1.0 - mask[:, :, :, None])
+    # )
+    u = u.at[:, :, 2:-2, 2:-2, 2:-2].set(
         u[:, :, 2:-2, 2:-2, 2:-2] * mask[:, None, :, :, None]
     )
-    u = u.loc[:, 0, 2:-2, 2:-2, 2:-2].add(
+    u = u.at[:, 0, 2:-2, 2:-2, 2:-2].add(
         d0[:, :, None, None] * (1.0 - mask[:, :, :, None])
     )
-    u = u.loc[:, 4, 2:-2, 2:-2, 2:-2].add(
+    u = u.at[:, 4, 2:-2, 2:-2, 2:-2].add(
         d0[:, :, None, None] * T0[:, :, None, None] * (1.0 - mask[:, :, :, None])
     )
 
@@ -1325,6 +1338,7 @@ def init_multi_HD_3DRand(
         d = d0 * (1.0 + delD * d / jnp.abs(d).mean())
         p = p0 * (1.0 + delP * p / jnp.abs(p).mean())
 
+        print(type(u))
         u = u.loc[0, 2:-2, 2:-2, 2:-2].set(d)
         u = u.loc[1, 2:-2, 2:-2, 2:-2].set(vx)
         u = u.loc[2, 2:-2, 2:-2, 2:-2].set(vy)

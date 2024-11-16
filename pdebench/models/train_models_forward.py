@@ -145,16 +145,20 @@ arrangements between the parties relating hereto.
 
        THIS HEADER MAY NOT BE EXTRACTED OR MODIFIED IN ANY WAY.
 """
+
 from __future__ import annotations
 
 import hydra
 from omegaconf import DictConfig
 
 
-@hydra.main(version_base="1.2", config_path="config", config_name="config_rdb")
+@hydra.main(version_base="1.2", config_path="config", config_name="config_2DCFD")
 def main(cfg: DictConfig):
+    print(cfg)
     if cfg.args.model_name == "FNO":
         from pdebench.models.fno.train import run_training as run_training_FNO
+
+        # from fno.train import run_training as run_training_FNO
 
         print("FNO")
         run_training_FNO(
@@ -190,6 +194,8 @@ def main(cfg: DictConfig):
         )
     elif cfg.args.model_name == "Unet":
         from pdebench.models.unet.train import run_training as run_training_Unet
+
+        # from unet.train import run_training as run_training_Unet
 
         print("Unet")
         run_training_Unet(
@@ -227,6 +233,8 @@ def main(cfg: DictConfig):
     elif cfg.args.model_name == "PINN":
         # not importing globally as DeepXDE changes some global PyTorch settings
         from pdebench.models.pinn.train import run_training as run_training_PINN
+
+        # from pinn.train import run_training as run_training_PINN
 
         print("PINN")
         run_training_PINN(

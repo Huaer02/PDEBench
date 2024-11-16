@@ -189,7 +189,7 @@ def _pass(carry):
 
 
 # Init arguments with Hydra
-@hydra.main(config_path="config", config_name="config")
+@hydra.main(version_base="1.2", config_path="config", config_name="config")
 def main(cfg: DictConfig) -> None:
     # physical constants
     gamma = cfg.args.gamma  # 3D non-relativistic gas

@@ -178,4 +178,6 @@ debug/
 
 # neural net, sciml artefacts
 .pt
-.hdf5
+*.hdf5
+*.h5
+*.npy
