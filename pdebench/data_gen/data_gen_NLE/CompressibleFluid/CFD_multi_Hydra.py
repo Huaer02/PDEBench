@@ -932,8 +932,23 @@ def main(cfg: DictConfig) -> None:
     VVz = VVz.reshape(cfg.args.numbers, itot, cfg.args.nx, cfg.args.ny, cfg.args.nz)
     PPP = PPP.reshape(cfg.args.numbers, itot, cfg.args.nx, cfg.args.ny, cfg.args.nz)
     print("now data saving...")
+
+    # 获取当前工作目录
+    current_dir = os.getcwd()
+    print("cwd: ", current_dir)
+
+    # 构建绝对路径
+    save_dir = os.path.join(current_dir, cfg.args.save)
+
+    # 确保目标文件夹存在
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+        print("mkdir :", save_dir)
+
+    print("save_dir: ", save_dir)
+
     jnp.save(
-        cfg.args.save
+        save_dir
         + "HD_Sols_"
         + cfg.args.init_mode_Multi
         + "_Eta"
@@ -948,7 +963,7 @@ def main(cfg: DictConfig) -> None:
         DDD,
     )
     jnp.save(
-        cfg.args.save
+        save_dir
         + "HD_Sols_"
         + cfg.args.init_mode_Multi
         + "_Eta"
@@ -963,7 +978,7 @@ def main(cfg: DictConfig) -> None:
         VVx,
     )
     jnp.save(
-        cfg.args.save
+        save_dir
         + "HD_Sols_"
         + cfg.args.init_mode_Multi
         + "_Eta"
@@ -978,7 +993,7 @@ def main(cfg: DictConfig) -> None:
         VVy,
     )
     jnp.save(
-        cfg.args.save
+        save_dir
         + "HD_Sols_"
         + cfg.args.init_mode_Multi
         + "_Eta"
@@ -993,7 +1008,7 @@ def main(cfg: DictConfig) -> None:
         VVz,
     )
     jnp.save(
-        cfg.args.save
+        save_dir
         + "HD_Sols_"
         + cfg.args.init_mode_Multi
         + "_Eta"
@@ -1007,10 +1022,10 @@ def main(cfg: DictConfig) -> None:
         + "_P",
         PPP,
     )
-    jnp.save(cfg.args.save + "/x_coordinate", xc)
-    jnp.save(cfg.args.save + "/y_coordinate", yc)
-    jnp.save(cfg.args.save + "/z_coordinate", zc)
-    jnp.save(cfg.args.save + "/t_coordinate", tc)
+    jnp.save(save_dir + "/x_coordinate", xc)
+    jnp.save(save_dir + "/y_coordinate", yc)
+    jnp.save(save_dir + "/z_coordinate", zc)
+    jnp.save(save_dir + "/t_coordinate", tc)
 
 
 if __name__ == "__main__":
