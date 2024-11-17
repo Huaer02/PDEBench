@@ -1,4 +1,4 @@
-save: "../save/CFD/"
+save: "../save/3D/CFD/"
 dt_save: 0.05
 ini_time: 0.
 fin_time: 1.
@@ -18,9 +18,9 @@ zeta: 1.e-8
 CFL: 3.e-1
 if_second_order: 1.
 if_show: 1
-show_steps: 400
+show_steps: 100
 p_floor: 1.e-4
-numbers: 10
+numbers: 12
 init_mode_Multi: "3D_rand"
 M0: 1.
 k_tot: 4
