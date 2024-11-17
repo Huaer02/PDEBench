@@ -1,0 +1,5 @@
+type: "CFD" # "advection"/"ReacDiff"/"burgers"/"CFD"
+dim: 3
+bd: "periodic"
+nbatch: 8
+savedir: "./save/3D/CFD/"

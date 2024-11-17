@@ -144,6 +144,7 @@ arrangements between the parties relating hereto.
 
        THIS HEADER MAY NOT BE EXTRACTED OR MODIFIED IN ANY WAY.
 """
+
 from __future__ import annotations
 
 import math as mt
@@ -153,11 +154,23 @@ import numpy as np
 import torch
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from torch import nn
+import logging
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-def metric_func(pred, target, if_mean=True, Lx=1.0, Ly=1.0, Lz=1.0, iLow=4, iHigh=12, initial_step=1):
+def metric_func(
+    pred,
+    target,
+    if_mean=True,
+    Lx=1.0,
+    Ly=1.0,
+    Lz=1.0,
+    iLow=4,
+    iHigh=12,
+    initial_step=1,
+    device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+):
     """
     code for calculate metrics discussed in the Brain-storming session
     RMSE, normalized RMSE, max error, RMSE at the boundaries, conserved variables, RMSE in Fourier space, temporal sensitivity
@@ -168,13 +181,13 @@ def metric_func(pred, target, if_mean=True, Lx=1.0, Ly=1.0, Lz=1.0, iLow=4, iHig
     pred = pred[..., initial_step:, :]
     target = target[..., initial_step:, :]
     idxs = target.size()
-    if len(idxs) == 4: # 1D
+    if len(idxs) == 4:  # 1D
         pred = pred.permute(0, 3, 1, 2)
         target = target.permute(0, 3, 1, 2)
-    if len(idxs) == 5: # 2D
+    if len(idxs) == 5:  # 2D
         pred = pred.permute(0, 4, 1, 2, 3)
         target = target.permute(0, 4, 1, 2, 3)
-    elif len(idxs) == 6: # 3D
+    elif len(idxs) == 6:  # 3D
         pred = pred.permute(0, 5, 1, 2, 3, 4)
         target = target.permute(0, 5, 1, 2, 3, 4)
     idxs = target.size()
@@ -318,6 +331,7 @@ def metrics(
     t_max,
     mode="FNO",
     initial_step=None,
+    device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
 ):
     if mode == "Unet":
         with torch.no_grad():
@@ -353,7 +367,15 @@ def metrics(
                     _err_Max,
                     _err_BD,
                     _err_F,
-                ) = metric_func(pred, yy, if_mean=True, Lx=Lx, Ly=Ly, Lz=Lz, initial_step=initial_step)
+                ) = metric_func(
+                    pred,
+                    yy,
+                    if_mean=True,
+                    Lx=Lx,
+                    Ly=Ly,
+                    Lz=Lz,
+                    initial_step=initial_step,
+                )
 
                 if itot == 0:
                     err_RMSE, err_nRMSE, err_CSV, err_Max, err_BD, err_F = (
@@ -411,7 +433,15 @@ def metrics(
                     _err_Max,
                     _err_BD,
                     _err_F,
-                ) = metric_func(pred, yy, if_mean=True, Lx=Lx, Ly=Ly, Lz=Lz, initial_step=initial_step)
+                ) = metric_func(
+                    pred,
+                    yy,
+                    if_mean=True,
+                    Lx=Lx,
+                    Ly=Ly,
+                    Lz=Lz,
+                    initial_step=initial_step,
+                )
                 if itot == 0:
                     err_RMSE, err_nRMSE, err_CSV, err_Max, err_BD, err_F = (
                         _err_RMSE,
@@ -802,3 +832,27 @@ def inverse_metrics(u0, x, pred_u0, y):
     }
 
     return metric
+
+
+def getLogger(file_path: str) -> logging.Logger:
+    # 配置日志记录
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+
+    # 创建文件处理器
+    file_handler = logging.FileHandler(file_path)
+    file_handler.setFormatter(
+        logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    )
+
+    # 创建控制台处理器
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(
+        logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+    )
+
+    # 添加处理器到日志记录器
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
+
+    return logger

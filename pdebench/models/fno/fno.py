@@ -24,6 +24,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
 from __future__ import annotations
 
 import torch
@@ -256,7 +257,9 @@ class FNO2d(nn.Module):
 
     def forward(self, x, grid):
         # x dim = [b, x1, x2, t*v]
-        x = torch.cat((x, grid), dim=-1)
+        x = torch.cat(
+            (x, grid), dim=-1
+        )  # 这里把x和grid拼接在一起 [b, x1, x2, v] [b, x1, x2, d] -> [b, x1, x2, v+d]
         x = self.fc0(x)
         x = x.permute(0, 3, 1, 2)
 

@@ -18,7 +18,8 @@ args:
   t_train: 21
   model_update: 2
   # filename: "2D_CFD_M0.1_Eta0.01_Zeta0.01_periodic_128_Train.hdf5"
-  filename: "2D_CFD_Rand_M0.1_Eta0.01_Zeta0.01_periodic_128_Train.hdf5"
+  # filename: "2D_CFD_Rand_M0.1_Eta0.01_Zeta0.01_periodic_128_Train.hdf5"
+  filename: "2D_CFD_rand_Eta1e-08_Zeta1e-08_M0.1_periodic_Train.hdf5"
   single_file: True
   reduced_resolution: 2
   reduced_resolution_t: 1
@@ -36,8 +37,9 @@ args:
   scheduler_gamma: 0.5
   initial_step: 10
   #Inverse
-  data_path: "./pdebench/data_download/data/2D/CFD/2D_Train_Rand/"
-  training_type: "single"
+  # data_path: "./pdebench/data_download/data/2D/CFD/2D_Train_Rand/"
+  data_path: "./pdebench/data_gen/data_gen_NLE/save/2D/CFD/"
+  training_type: "autoregressive"
   #plotting
   plot: False
   channel_plot: 0 # Which channel/variable to be plotted

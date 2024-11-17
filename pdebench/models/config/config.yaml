@@ -6,7 +6,7 @@ defaults:
 hydra:
   output_subdir: null
   run:
-    dir: .
+    dir: ./../../
 
 args:
   model_name: "FNO"

@@ -18,9 +18,9 @@ zeta: 1.e-8
 CFL: 3.e-1
 if_second_order: 1.
 if_show: 1
-show_steps: 100
+show_steps: 400
 p_floor: 1.e-4
-numbers: 12
+numbers: 4
 init_mode_Multi: "3D_rand"
 M0: 1.
 k_tot: 4

@@ -408,6 +408,7 @@ def transform(type, savedir):
 # Init arguments with Hydra
 @hydra.main(version_base="1.2", config_path="config", config_name="config")
 def main(cfg: DictConfig) -> None:
+    print(cfg)
     pde1ds = ["advection", "burgers", "ReacDiff"]
     if cfg.args.type in pde1ds and cfg.args.dim == 1:
         transform(type=cfg.args.type, savedir=cfg.args.savedir)

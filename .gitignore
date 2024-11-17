@@ -177,7 +177,7 @@ debug/
 .DS_Store
 
 # neural net, sciml artefacts
-.pt
+*.pt
 *.hdf5
 *.h5
 *.npy

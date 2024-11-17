@@ -1,4 +1,5 @@
 model_name: "FNO"
+device: "cuda:1"
 if_training: True
 continue_training: False
 batch_size: 20
@@ -6,7 +7,9 @@ unroll_step: 20
 num_workers: 2
 t_train: 21
 model_update: 2
-filename: "2D_CFD_M0.1_Eta0.01_Zeta0.01_periodic_128_Train.hdf5"
+# filename: "2D_CFD_M0.1_Eta0.01_Zeta0.01_periodic_128_Train.hdf5"
+# filename: "2D_CFD_Rand_M0.1_Eta0.01_Zeta0.01_periodic_128_Train.hdf5"
+filename: "2D_CFD_rand_Eta1e-08_Zeta1e-08_M0.1_periodic_Train.hdf5"
 single_file: True
 reduced_resolution: 2
 reduced_resolution_t: 1
@@ -23,3 +26,16 @@ width: 20
 scheduler_step: 100
 scheduler_gamma: 0.5
 initial_step: 10
+#Inverse
+# data_path: "./pdebench/data_download/data/2D/CFD/2D_Train_Rand/"
+data_path: "./pdebench/data_gen/data_gen_NLE/save/2D/CFD/"
+training_type: "autoregressive"
+#plotting
+plot: False
+channel_plot: 0 # Which channel/variable to be plotted
+x_min: -1
+x_max: 1 # spatial dimension x: [-1, 1]
+y_min: -1
+y_max: 1 # spatial dimension y: [-1, 1]
+t_min: 0
+t_max: 5 # time dimension t: [0, 5]

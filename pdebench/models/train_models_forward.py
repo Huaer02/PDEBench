@@ -152,7 +152,7 @@ import hydra
 from omegaconf import DictConfig
 
 
-@hydra.main(version_base="1.2", config_path="config", config_name="config_2DCFD")
+@hydra.main(version_base="1.2", config_path="config", config_name="config")
 def main(cfg: DictConfig):
     print(cfg)
     if cfg.args.model_name == "FNO":
@@ -191,6 +191,7 @@ def main(cfg: DictConfig):
             y_max=cfg.args.y_max,
             t_min=cfg.args.t_min,
             t_max=cfg.args.t_max,
+            device_index=cfg.args.device,
         )
     elif cfg.args.model_name == "Unet":
         from pdebench.models.unet.train import run_training as run_training_Unet
@@ -229,6 +230,7 @@ def main(cfg: DictConfig):
             y_max=cfg.args.y_max,
             t_min=cfg.args.t_min,
             t_max=cfg.args.t_max,
+            device_index=cfg.args.device,
         )
     elif cfg.args.model_name == "PINN":
         # not importing globally as DeepXDE changes some global PyTorch settings
@@ -250,6 +252,7 @@ def main(cfg: DictConfig):
             val_num=cfg.args.val_num,
             if_periodic_bc=cfg.args.if_periodic_bc,
             aux_params=cfg.args.aux_params,
+            device_index=cfg.args.device,
         )
 
 

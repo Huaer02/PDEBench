@@ -9,12 +9,14 @@ import torch
 
 from pdebench.models.fno.fno import FNO1d, FNO2d, FNO3d
 from pdebench.models.fno.utils import FNODatasetMult, FNODatasetSingle
-from pdebench.models.metrics import metrics
+from pdebench.models.metrics import metrics, getLogger
 from torch import nn
+from datetime import datetime
+from tqdm import tqdm
 
 # torch.manual_seed(0)
 # np.random.seed(0)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 def run_training(
@@ -47,15 +49,27 @@ def run_training(
     t_max,
     base_path="../data/",
     training_type="autoregressive",
+    device_index="cuda",
 ):
-    print(
+    (Path(Path(base_path).resolve()) / "logs/").mkdir(parents=True, exist_ok=True)
+
+    root_path = (
+        Path(Path(base_path).resolve()) / "logs/"
+    ) / f"{datetime.now().strftime('%Y-%m-%d_%H-%M')}.log"
+    print(root_path)
+    logger = getLogger(root_path)
+    device = torch.device(device_index if torch.cuda.is_available() else "cpu")
+    logger.info(
         f"Epochs = {epochs}, learning rate = {learning_rate}, scheduler step = {scheduler_step}, scheduler gamma = {scheduler_gamma}"
     )
+    # print(
+    #     f"Epochs = {epochs}, learning rate = {learning_rate}, scheduler step = {scheduler_step}, scheduler gamma = {scheduler_gamma}"
+    # )
 
     ################################################################
     # load data
     ################################################################
-
+    logger.info("Loading data")
     if single_file:
         # filename
         model_name = flnm[:-5] + "_FNO"
@@ -111,7 +125,7 @@ def run_training(
     ################################################################
     # training and evaluation
     ################################################################
-
+    logger.info("Training and evaluation")
     _, _data, _ = next(iter(val_loader))
     dimensions = len(_data.shape)
     # print("Spatial Dimension", dimensions - 3)
@@ -207,10 +221,11 @@ def run_training(
 
         start_epoch = checkpoint["epoch"]
         loss_val_min = checkpoint["loss"]
-
-    for ep in range(start_epoch, epochs):
+    for ep in tqdm(range(start_epoch, epochs), desc="Training Epochs"):
+        #     pass
+        # for ep in range(start_epoch, epochs):
         model.train()
-        # t1 = default_timer()
+        t1 = default_timer()
         train_l2_step = 0
         train_l2_full = 0
         for xx, yy, grid in train_loader:
@@ -266,8 +281,12 @@ def run_training(
                 optimizer.step()
 
             if training_type in ["single"]:
-                x = xx[..., 0, :]  # 20,64,64,10,4
-                y = yy[..., t_train - 1 : t_train, :]  # 20,64,64,21,4
+                x = xx[
+                    ..., 0, :
+                ]  # x.shape=torch.Size([20, 64, 64, 4]) xx.shape=torch.Size([20, 64, 64, 10, 4])
+                y = yy[
+                    ..., t_train - 1 : t_train, :
+                ]  # y.shape=torch.Size([20, 64, 64, 1, 4]) yy.shape=torch.Size([20, 64, 64, 21, 4])
                 pred = model(x, grid)
                 _batch = yy.size(0)
                 loss += loss_fn(pred.reshape(_batch, -1), y.reshape(_batch, -1))
@@ -338,12 +357,17 @@ def run_training(
                         model_path,
                     )
 
-        # t2 = default_timer()
+        t2 = default_timer()
         scheduler.step()
+        logger.info(
+            "epoch: {0}, loss: {1:.5f}, t2-t1: {2:.5f}, trainL2: {3:.5f}, testL2: {4:.5f}".format(
+                ep, loss.item(), t2 - t1, train_l2_full, val_l2_full
+            )
+        )
         # print(
-        #    "epoch: {0}, loss: {1:.5f}, t2-t1: {2:.5f}, trainL2: {3:.5f}, testL2: {4:.5f}".format(
-        #        ep, loss.item(), t2 - t1, train_l2_full, val_l2_full
-        #    )
+        #     "epoch: {0}, loss: {1:.5f}, t2-t1: {2:.5f}, trainL2: {3:.5f}, testL2: {4:.5f}".format(
+        #         ep, loss.item(), t2 - t1, train_l2_full, val_l2_full
+        #     )
         # )
 
 
