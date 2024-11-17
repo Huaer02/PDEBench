@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """
        <NAME OF THE PROGRAM THIS FILE BELONGS TO>
 
@@ -154,8 +156,6 @@ A more detailed explanation how to use this script is provided in the README.
 # Hydra
 
 
-from __future__ import annotations
-
 import glob
 
 import h5py
@@ -290,10 +290,10 @@ def merge(type, dim, bd, nbatch, savedir):
         _beta = data[0].split("/")[-1].split("_")[3]
         flnm = savedir + "/2D_DecayFlow_" + _beta + "_Train.hdf5"
         with h5py.File(flnm, "w") as f:
-            f.create_dataet("tensor", data=np.load(savedir + "/2D.npy")[:, None, :, :])
-            f.create_dataet("nu", data=np.load(savedir + "/nu.npy"))
-            f.create_dataet("x-coordinate", data=xcrd)
-            f.create_dataet("y-coordinate", data=ycrd)
+            f.create_dataset("tensor", data=np.load(savedir + "/2D.npy")[:, None, :, :])
+            f.create_dataset("nu", data=np.load(savedir + "/nu.npy"))
+            f.create_dataset("x-coordinate", data=xcrd)
+            f.create_dataset("y-coordinate", data=ycrd)
             f.attrs["beta"] = float(_beta[4:])
         return 0
 
@@ -349,17 +349,17 @@ def merge(type, dim, bd, nbatch, savedir):
     del DataND
 
     with h5py.File(flnm, "w") as f:
-        f.create_dataet("density", data=np.load(savedir + "/D.npy"))
-        f.create_dataet("pressure", data=np.load(savedir + "/P.npy"))
-        f.create_dataet("Vx", data=np.load(savedir + "/Vx.npy"))
+        f.create_dataset("density", data=np.load(savedir + "/D.npy"))
+        f.create_dataset("pressure", data=np.load(savedir + "/P.npy"))
+        f.create_dataset("Vx", data=np.load(savedir + "/Vx.npy"))
         if dim > 1:
-            f.create_dataet("Vy", data=np.load(savedir + "/Vy.npy"))
-            f.create_dataet("y-coordinate", data=ycrd)
+            f.create_dataset("Vy", data=np.load(savedir + "/Vy.npy"))
+            f.create_dataset("y-coordinate", data=ycrd)
         if dim == 3:
-            f.create_dataet("Vz", data=np.load(savedir + "/Vz.npy"))
-            f.create_dataet("z-coordinate", data=zcrd)
-        f.create_dataet("x-coordinate", data=xcrd)
-        f.create_dataet("t-coordinate", data=tcrd)
+            f.create_dataset("Vz", data=np.load(savedir + "/Vz.npy"))
+            f.create_dataset("z-coordinate", data=zcrd)
+        f.create_dataset("x-coordinate", data=xcrd)
+        f.create_dataset("t-coordinate", data=tcrd)
         eta = float(_eta[3:])
         zeta = float(_zeta[4:])
         print("(eta, zeta) = ", eta, zeta)
@@ -406,7 +406,7 @@ def transform(type, savedir):
 
 
 # Init arguments with Hydra
-@hydra.main(config_path="config", config_name="config")
+@hydra.main(version_base="1.2", config_path="config", config_name="config")
 def main(cfg: DictConfig) -> None:
     pde1ds = ["advection", "burgers", "ReacDiff"]
     if cfg.args.type in pde1ds and cfg.args.dim == 1:
