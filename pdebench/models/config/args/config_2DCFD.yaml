@@ -2,7 +2,7 @@ model_name: "FNO"
 device: "cuda:1"
 if_training: True
 continue_training: False
-batch_size: 20
+batch_size: 40
 unroll_step: 20
 num_workers: 2
 t_train: 21
